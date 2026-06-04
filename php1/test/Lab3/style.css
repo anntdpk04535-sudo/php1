@@ -1,0 +1,537 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:#f4f7fc;
+    color:#333;
+}
+
+/* =====================
+   LOGIN & REGISTER
+===================== */
+
+.auth-container{
+    min-height:100vh;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    background:
+    linear-gradient(
+        135deg,
+        #667eea,
+        #764ba2
+    );
+}
+
+.auth-box{
+
+    width:450px;
+
+    background:
+    rgba(255,255,255,.15);
+
+    backdrop-filter:blur(20px);
+
+    border-radius:25px;
+
+    padding:40px;
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,.2);
+}
+
+.auth-box h2{
+
+    text-align:center;
+    color:white;
+
+    margin-bottom:25px;
+
+    font-size:34px;
+}
+
+.input-group{
+    margin-bottom:18px;
+}
+
+.input-group label{
+    display:block;
+    color:white;
+    margin-bottom:8px;
+}
+
+.input-group input{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:
+    rgba(255,255,255,.25);
+
+    color:white;
+
+    outline:none;
+}
+
+.input-group input::placeholder{
+    color:rgba(255,255,255,.8);
+}
+
+.btn-login{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:white;
+
+    color:#764ba2;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.btn-login:hover{
+
+    transform:translateY(-3px);
+
+    box-shadow:
+    0 8px 20px rgba(0,0,0,.2);
+}
+
+.register{
+
+    text-align:center;
+
+    margin-top:20px;
+
+    color:white;
+}
+
+.register a{
+    color:white;
+    font-weight:600;
+}
+
+/* =====================
+   DASHBOARD
+===================== */
+
+.dashboard{
+
+    width:90%;
+
+    max-width:1200px;
+
+    margin:30px auto;
+}
+
+.dashboard h1{
+
+    margin-bottom:20px;
+
+    color:#1e293b;
+}
+
+.menu{
+
+    display:flex;
+
+    gap:15px;
+
+    margin-bottom:30px;
+}
+
+.menu a{
+
+    background:#2563eb;
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+
+    transition:.3s;
+}
+
+.menu a:hover{
+    background:#1d4ed8;
+}
+
+/* =====================
+   CRUD
+===================== */
+
+.container{
+
+    width:90%;
+
+    max-width:1200px;
+
+    margin:40px auto;
+}
+
+.header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+}
+
+.header h2{
+    color:#1e293b;
+}
+
+.btn{
+
+    display:inline-block;
+
+    padding:10px 16px;
+
+    background:#2563eb;
+
+    color:white;
+
+    text-decoration:none;
+
+    border:none;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+.btn:hover{
+    background:#1d4ed8;
+}
+
+.btn-delete{
+    background:#dc2626;
+}
+
+.btn-delete:hover{
+    background:#b91c1c;
+}
+
+.btn-success{
+    background:#16a34a;
+}
+
+.btn-success:hover{
+    background:#15803d;
+}
+
+/* =====================
+   FORM
+===================== */
+
+.form-card{
+
+    background:white;
+
+    padding:30px;
+
+    border-radius:15px;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,.08);
+}
+
+.form-card label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:500;
+}
+
+.form-card input,
+.form-card textarea,
+.form-card select{
+
+    width:100%;
+
+    padding:12px;
+
+    border:1px solid #ddd;
+
+    border-radius:8px;
+
+    margin-bottom:20px;
+
+    font-size:15px;
+}
+
+.form-card input:focus,
+.form-card textarea:focus,
+.form-card select:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+}
+
+/* =====================
+   TABLE
+===================== */
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    background:white;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 10px 25px rgba(0,0,0,.08);
+}
+
+table thead{
+
+    background:#2563eb;
+
+    color:white;
+}
+
+table th{
+
+    padding:15px;
+
+    text-align:left;
+}
+
+table td{
+
+    padding:15px;
+
+    border-bottom:1px solid #eee;
+}
+
+table tr:hover{
+
+    background:#f8fafc;
+}
+
+.action{
+
+    display:flex;
+
+    gap:10px;
+}
+
+/* =====================
+   IMAGE PRODUCT
+===================== */
+
+.product-image{
+
+    width:80px;
+
+    height:80px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+    border:1px solid #ddd;
+}
+
+/* =====================
+   ALERT
+===================== */
+
+.alert-success{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:20px;
+}
+
+.alert-danger{
+
+    background:#fee2e2;
+
+    color:#991b1b;
+
+    padding:12px;
+
+    border-radius:8px;
+
+    margin-bottom:20px;
+}
+
+/* =====================
+   MOBILE
+===================== */
+
+@media(max-width:768px){
+
+    .header{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .menu{
+        flex-direction:column;
+    }
+
+    table{
+        display:block;
+        overflow-x:auto;
+    }
+
+    .auth-box{
+        width:95%;
+    }
+}
+
+.dashboard{
+    width:95%;
+    margin:30px auto;
+}
+
+.menu{
+    display:flex;
+    gap:15px;
+    margin-bottom:30px;
+}
+
+.menu a{
+
+    text-decoration:none;
+
+    background:#2563eb;
+
+    color:white;
+
+    padding:12px 20px;
+
+    border-radius:10px;
+}
+
+.menu a:hover{
+    background:#1d4ed8;
+}
+
+/* PRODUCT EDIT */
+
+.edit-container{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:40px;
+    background:#f4f6fb;
+}
+
+.edit-card{
+    width:100%;
+    max-width:700px;
+    background:#fff;
+    padding:35px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.1);
+}
+
+.edit-card h2{
+    text-align:center;
+    margin-bottom:25px;
+    color:#1f2937;
+}
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:600;
+    color:#374151;
+}
+
+.edit-card input[type="text"],
+.edit-card input[type="number"],
+.edit-card input[type="file"],
+.edit-card select,
+.edit-card textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.edit-card textarea{
+    resize:none;
+    min-height:120px;
+}
+
+.preview-image{
+    width:180px;
+    height:180px;
+    object-fit:cover;
+    border-radius:12px;
+    border:1px solid #ddd;
+    margin-top:10px;
+}
+
+.save-btn{
+    width:100%;
+    padding:14px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.3s;
+}
+
+.save-btn:hover{
+    background:#1d4ed8;
+}
