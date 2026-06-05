@@ -1123,7 +1123,7 @@ function goCheckout() {
   openModal('checkoutOverlay');
 }
 
-/* ─── LIVE VALIDATE (frontend) ─── */
+/* ─── LIVE VALIDATE  ─── */
 const validators = {
   f_fullname: v => {
     if (!v) return 'Vui lòng nhập họ tên.';
