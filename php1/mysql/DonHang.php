@@ -1,0 +1,316 @@
+<?php
+session_start();
+
+// kết nối Db
+$pdo = new PDO("mysql:host=127.0.0.1;dbname=lab4;charset=utf8", "root", "");
+
+// sử lý trạng thái 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'update_status') {
+    $order_id = $_POST['order_id'];
+    $status   = $_POST['status'];
+
+    $stmt = $pdo->prepare("UPDATE orders SET status = ? WHERE order_id = ?");
+    $stmt->execute([$status, $order_id]);
+
+    header("Location: DonHang.php");
+    exit;
+}
+
+// lấy danh sách đơn hàng
+$stmt = $pdo->query("SELECT * FROM orders ORDER BY order_id DESC");
+$orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// xem chi tiết đơn hàng (nếu có ?detail=...)
+$detail = null;
+$detail_items = [];
+if (isset($_GET['detail'])) {
+    $detail_id = $_GET['detail'];
+
+    // lấy thông tin đơn hàng
+    $stmt = $pdo->prepare("SELECT * FROM orders WHERE order_id = ?");
+    $stmt->execute([$detail_id]);
+    $detail = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // lấy danh sách sản phẩm trong đơn
+    if ($detail) {
+        $stmt = $pdo->prepare("SELECT * FROM order_items WHERE order_id = ?");
+        $stmt->execute([$detail_id]);
+        $detail_items = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng của tôi</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Thanh điều hướng */
+        .nav {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .nav a {
+            margin: 0 10px;
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+        .nav a:hover {
+            color: #c0392b;
+        }
+
+        /* Bảng đơn hàng */
+        table {
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            border-collapse: collapse;
+            background: #fff;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #333;
+            color: #fff;
+        }
+
+        /* Badge trạng thái */
+        .badge {
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #fff;
+        }
+        .badge-placed    { background: #3498db; }
+        .badge-shipping  { background: #f39c12; }
+        .badge-completed { background: #27ae60; }
+
+        /* Dropdown chọn trạng thái */
+        .status-form select {
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 13px;
+        }
+        .status-form button {
+            padding: 4px 10px;
+            border: none;
+            background: #333;
+            color: #fff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .status-form button:hover {
+            background: #555;
+        }
+
+        .price {
+            color: #c0392b;
+            font-weight: bold;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .btn-detail {
+            padding: 4px 10px;
+            background: #3498db;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+        }
+        .btn-detail:hover {
+            background: #2980b9;
+        }
+
+        /* Khung chi tiết đơn hàng */
+        .detail-box {
+            max-width: 900px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .detail-box h2 {
+            margin-bottom: 16px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 8px;
+        }
+        .detail-box p {
+            margin: 6px 0;
+        }
+        .detail-box .label {
+            font-weight: bold;
+            display: inline-block;
+            width: 140px;
+        }
+        .item-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        .item-table th, .item-table td {
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .item-table th {
+            background: #f0f0f0;
+            color: #333;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Đơn hàng của tôi</h1>
+
+<div class="nav">
+    <a href="cart.php">Cửa Hàng</a>
+    <a href="DonHang.php">Đơn Hàng</a>
+    <a href="lab4.php">Quản lý</a>
+</div>
+
+<table>
+    <tr>
+        <th>Mã đơn</th>
+        <th>Khách hàng</th>
+        <th>Ngày đặt</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+        <th>Cập nhật</th>
+        <th>Xem</th>
+    </tr>
+
+    <?php if (count($orders) === 0): ?>
+        <tr>
+            <td colspan="7" class="empty">Chưa có đơn hàng nào.</td>
+        </tr>
+    <?php else: ?>
+        <?php foreach ($orders as $order): ?>
+            <tr>
+                <!-- mã đơn -->
+                <td><strong>#<?= htmlspecialchars($order['order_id']) ?></strong></td>
+
+                <!-- Tên khách -->
+                <td><?= htmlspecialchars($order['fullname']) ?></td>
+
+                <!-- Ngày đặt -->
+                <td><?= htmlspecialchars($order['created_at']) ?></td>
+
+                <!-- Tổng tiền -->
+                <td class="price"><?= number_format($order['total'], 0, ',', '.') ?>đ</td>
+
+                <!-- Trạng thái hiện tại -->
+                <td>
+                    <?php
+                    $status = $order['status'];
+                    if ($status === 'Đang giao') {
+                        $badgeClass = 'badge-shipping';
+                    } elseif ($status === 'Hoàn tất') {
+                        $badgeClass = 'badge-completed';
+                    } else {
+                        $badgeClass = 'badge-placed';
+                    }
+                    ?>
+                    <span class="badge <?= $badgeClass ?>"><?= htmlspecialchars($status) ?></span>
+                </td>
+
+                <!-- Form cập nhật trạng thái -->
+                <td>
+                    <form class="status-form" method="POST" action="DonHang.php">
+                        <input type="hidden" name="action" value="update_status">
+                        <input type="hidden" name="order_id" value="<?= htmlspecialchars($order['order_id']) ?>">
+                        <select name="status">
+                            <option value="Đã đặt"   <?= $status === 'Đã đặt'   ? 'selected' : '' ?>>Đã đặt</option>
+                            <option value="Đang giao" <?= $status === 'Đang giao' ? 'selected' : '' ?>>Đang giao</option>
+                            <option value="Hoàn tất"  <?= $status === 'Hoàn tất'  ? 'selected' : '' ?>>Hoàn tất</option>
+                        </select>
+                        <button type="submit">Lưu</button>
+                    </form>
+                </td>
+
+                <!-- nút chi tiết -->
+                <td>
+                    <a class="btn-detail" href="DonHang.php?detail=<?= htmlspecialchars($order['order_id']) ?>">Chi tiết</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</table>
+
+<?php if ($detail): ?>
+<!-- chi tiết đơn hàng -->
+<div class="detail-box">
+    <h2>Chi tiết đơn hàng #<?= htmlspecialchars($detail['order_id']) ?></h2>
+
+    <p><span class="label">Khách hàng:</span> <?= htmlspecialchars($detail['fullname']) ?></p>
+    <p><span class="label">Điện thoại:</span> <?= htmlspecialchars($detail['phone']) ?></p>
+    <p><span class="label">Email:</span> <?= htmlspecialchars($detail['email']) ?></p>
+    <p><span class="label">Địa chỉ:</span> <?= htmlspecialchars($detail['address']) ?></p>
+    <p><span class="label">Ghi chú:</span> <?= htmlspecialchars($detail['note'] ?: 'Không có') ?></p>
+    <p><span class="label">Thanh toán:</span> <?= htmlspecialchars($detail['payment']) ?></p>
+    <p><span class="label">Trạng thái:</span> <?= htmlspecialchars($detail['status']) ?></p>
+    <p><span class="label">Tổng tiền:</span> <strong class="price"><?= number_format($detail['total'], 0, ',', '.') ?>đ</strong></p>
+
+    <h3>Sản phẩm trong đơn:</h3>
+    <?php if (count($detail_items) > 0): ?>
+        <table class="item-table">
+            <tr>
+                <th>Sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Đơn giá</th>
+                <th>Thành tiền</th>
+            </tr>
+            <?php foreach ($detail_items as $item): ?>
+                <tr>
+                    <td><?= htmlspecialchars($item['description']) ?></td>
+                    <td><?= $item['quantity'] ?></td>
+                    <td><?= number_format($item['price'], 0, ',', '.') ?>đ</td>
+                    <td class="price"><?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?>đ</td>
+                </tr>
+            <?php endforeach; ?>
+        </table>
+    <?php else: ?>
+        <p>Không có thông tin sản phẩm.</p>
+    <?php endif; ?>
+
+    <a class="back-link" href="DonHang.php">&larr; Quay lại danh sách</a>
+</div>
+<?php endif; ?>
+
+</body>
+</html>

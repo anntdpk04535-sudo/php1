@@ -404,8 +404,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 <body>
 
 <header class="topbar">
-  <span class="topbar-brand">🛍 Shop</span>
+  <span class="topbar-brand">Shop</span>
   <nav class="topbar-nav">
+    <a href="DonHang.php">Đơn hàng</a>
     <a href="lab4.php">Quản lý</a>
     <button class="cart-btn" onclick="openCart()">
       🛒 Giỏ hàng
