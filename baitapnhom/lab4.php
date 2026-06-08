@@ -1,50 +1,90 @@
 <?php
+// Lấy thông tin đường dẫn gốc thư mục dự án của file hiện tại để định tuyến chính xác URL ảnh
 $baseUrl = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
-try {
-    $pdo = new PDO("mysql:host=127.0.0.1;dbname=lab4;charset=utf8", "root", "", [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
-} catch (PDOException $e) { die("Lỗi kết nối cơ sơ dữ liệu: " . $e->getMessage()); }
 
+try {
+    // Kết nối CSDL MySQL bằng thư viện PDO
+    $pdo = new PDO("mysql:host=127.0.0.1;dbname=lab4;charset=utf8", "root", "", [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
+} catch (PDOException $e) { 
+    die("Lỗi kết nối cơ sơ dữ liệu: " . $e->getMessage()); 
+}
+
+// Khởi tạo các biến chứa trạng thái thông báo lỗi hoặc thành công rỗng ban đầu
 $error = ''; $success = ''; $editProduct = null;
 
+// XỬ LÝ: Khi form POST dữ liệu (Thêm mới, Cập nhật sửa đổi, Xóa) được kích hoạt gửi đi
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? '';
+    
+    // Gộp chung bộ xử lý dữ liệu đầu vào cho cả 2 hành động 'Thêm' (add) và 'Sửa' (edit) sản phẩm
     if (in_array($action, ['add', 'edit'])) {
         $productId = trim($_POST['productId'] ?? ''); $description = trim($_POST['description'] ?? ''); $price = trim($_POST['price'] ?? ''); $image = trim($_POST['oldImage'] ?? '');
         
+        // XỬ LÝ: Tải tập tin hình ảnh lên Server (File Upload) nếu có file được chọn hợp lệ
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'uploads/'; if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            $uploadDir = 'uploads/'; 
+            // Nếu thư mục 'uploads/' chưa tồn tại trên ổ đĩa, tự động tạo mới với toàn quyền đọc ghi 0777
+            if (!is_dir($uploadDir)) mkdir($uploadDir, 0777, true);
+            // Đặt tên file bằng cách nối chuỗi hàm time() giúp tên tệp tin độc nhất, không bị lỗi ghi đè nếu trùng tên file ảnh gốc
             $targetPath = $uploadDir . time() . '_' . basename($_FILES['image']['name']);
-            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) $image = $targetPath;
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
+                $image = $targetPath; // Gán lại đường dẫn file ảnh mới vừa upload thành công
+            }
         }
 
+        // Kiểm tra cơ bản xem dữ liệu có bị bỏ trống trường nào bắt buộc không
         if (empty($productId) || empty($description) || empty($price) || empty($image)) {
             $error = 'Vui lòng nhập đầy đủ thông tin';
         } else {
+            // Hành động THÊM MỚI sản phẩm
             if ($action === 'add') {
+                // Kiểm tra xem mã ID sản phẩm định thêm này đã tồn tại sẵn dưới database chưa để tránh lỗi trùng khóa chính (Primary Key)
                 $stmt = $pdo->prepare("SELECT COUNT(*) FROM products WHERE product_id = ?"); $stmt->execute([$productId]);
-                if ($stmt->fetchColumn() > 0) { $error = 'ID sản phẩm đã tồn tại!'; }
-                else { $pdo->prepare("INSERT INTO products VALUES (?, ?, ?, ?)")->execute([$productId, $description, $price, $image]); $success = 'Thêm sản phẩm thành công!'; }
+                if ($stmt->fetchColumn() > 0) { 
+                    $error = 'ID sản phẩm đã tồn tại!'; 
+                } else { 
+                    // Thực thi câu lệnh chèn hàng dữ liệu mới vào bảng 'products'
+                    $pdo->prepare("INSERT INTO products VALUES (?, ?, ?, ?)")->execute([$productId, $description, $price, $image]); 
+                    $success = 'Thêm sản phẩm thành công!'; 
+                }
+            // Hành động CẬP NHẬT (SỬA) sản phẩm đã có sẵn
             } elseif ($action === 'edit') {
                 $pdo->prepare("UPDATE products SET description = ?, price = ?, image = ? WHERE product_id = ?")->execute([$description, $price, $image, $productId]);
                 $success = 'Cập nhật sản phẩm thành công!';
             }
         }
-    } elseif ($action === 'delete') {
-        if (!empty($_POST['productId'])) { $pdo->prepare("DELETE FROM products WHERE product_id = ?")->execute([$_POST['productId']]); $success = 'Xóa sản phẩm thành công!'; }
+    } 
+    // Hành động XÓA sản phẩm
+    elseif ($action === 'delete') {
+        if (!empty($_POST['productId'])) { 
+            // Thực hiện xóa sản phẩm theo mã product_id tương ứng nhận được
+            $pdo->prepare("DELETE FROM products WHERE product_id = ?")->execute([$_POST['productId']]); 
+            $success = 'Xóa sản phẩm thành công!'; 
+        }
     }
 }
 
+// XỬ LÝ TRẠNG THÁI SỬA: Lấy thông tin sản phẩm cần sửa điền ngược lên Form nếu nhận thấy trên URL có lệnh ?action=edit&id=...
 if (isset($_GET['action']) && $_GET['action'] === 'edit' && isset($_GET['id'])) {
-    $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = ?"); $stmt->execute([$_GET['id']]); $editProduct = $stmt->fetch(PDO::FETCH_ASSOC);
+    $stmt = $pdo->prepare("SELECT * FROM products WHERE product_id = ?"); $stmt->execute([$_GET['id']]); 
+    $editProduct = $stmt->fetch(PDO::FETCH_ASSOC); // Lưu bản ghi sản phẩm vào biến để đổ ra form HTML bên dưới
 }
 
+// XỬ LÝ: Bộ lọc Tìm kiếm sản phẩm tại trang Admin quản lý
 $search = trim($_GET['search'] ?? ''); $params = []; $searchQuery = "";
-if ($search !== '') { $searchQuery = " WHERE product_id LIKE ? OR description LIKE ?"; $params = ["%$search%", "%$search%"]; }
+if ($search !== '') { 
+    $searchQuery = " WHERE product_id LIKE ? OR description LIKE ?"; 
+    $params = ["%$search%", "%$search%"]; 
+}
+
+// XỬ LÝ: Cơ chế phân trang cho trang quản lý Admin (Giới hạn hiển thị 3 sản phẩm trên một trang)
 $limit = 3; $page = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1; $offset = ($page - 1) * $limit;
 
+// Tính toán tổng số trang dựa trên kết quả tìm kiếm chia cho giới hạn limit hiển thị
 $stmtCount = $pdo->prepare("SELECT COUNT(*) FROM products" . $searchQuery); $stmtCount->execute($params);
 $totalPages = ceil($stmtCount->fetchColumn() / $limit);
 
+// Truy vấn lấy dữ liệu sản phẩm giới hạn của trang hiện tại đổ lên Grid danh sách bên dưới
 $stmt = $pdo->prepare("SELECT * FROM products" . $searchQuery . " ORDER BY product_id DESC LIMIT ? OFFSET ?");
 foreach ($params as $index => $param) $stmt->bindValue($index + 1, $param);
 $stmt->bindValue(count($params) + 1, $limit, PDO::PARAM_INT); $stmt->bindValue(count($params) + 2, $offset, PDO::PARAM_INT); $stmt->execute();
@@ -69,12 +109,15 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <form class="product-form" method="POST" enctype="multipart/form-data">
     <h2><?= $editProduct ? 'Sửa sản phẩm' : 'Thêm sản phẩm' ?></h2>
     <input type="hidden" name="action" value="<?= $editProduct ? 'edit' : 'add' ?>">
+    
     <div class="form-group"><label>ID sản phẩm</label><input type="text" name="productId" value="<?= htmlspecialchars($editProduct['product_id'] ?? '') ?>" <?= $editProduct ? 'readonly style="background: #e9ecef;"' : 'required' ?> /></div>
     <div class="form-group"><label>Mô tả</label><textarea name="description" required><?= htmlspecialchars($editProduct['description'] ?? '') ?></textarea></div>
     <div class="form-group"><label>Giá</label><input type="text" name="price" value="<?= htmlspecialchars($editProduct['price'] ?? '') ?>" required /></div>
-    <div class="form-group"><label>Hình ảnh</label><input type="file" name="image" accept="image/*" <?= $editProduct ? '' : 'required' ?> />
+    <div class="form-group">
+      <label>Hình ảnh</label><input type="file" name="image" accept="image/*" <?= $editProduct ? '' : 'required' ?> />
       <?php if ($editProduct && !empty($editProduct['image'])): ?><input type="hidden" name="oldImage" value="<?= htmlspecialchars($editProduct['image']) ?>"><img src="<?= htmlspecialchars($baseUrl . '/' . ltrim($editProduct['image'], '/')) ?>" style="max-width:150px; display:block; margin-top:10px; border-radius:8px;"><?php endif; ?>
     </div>
+    
     <button class="btn-add" type="submit"><?= $editProduct ? 'Cập nhật sản phẩm' : 'Thêm sản phẩm' ?></button>
     <?php if ($editProduct): ?><a href="lab4.php" style="display: block; text-align: center; margin-top: 10px; color: #666; text-decoration: none;">Hủy</a><?php endif; ?>
   </form>
@@ -89,7 +132,9 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="product-card">
         <img src="<?= htmlspecialchars($baseUrl . '/' . ltrim($product['image'], '/')) ?>" />
         <div class="product-info">
-          <p class="product-id">ID: <?= htmlspecialchars($product['product_id']) ?></p><p class="product-description">Mô tả: <?= htmlspecialchars($product['description']) ?></p><p class="product-price">Giá: <?= htmlspecialchars($product['price']) ?></p>
+          <p class="product-id">ID: <?= htmlspecialchars($product['product_id']) ?></p>
+          <p class="product-description">Mô tả: <?= htmlspecialchars($product['description']) ?></p>
+          <p class="product-price">Giá: <?= htmlspecialchars($product['price']) ?></p>
           <div class="btn-group">
             <a href="lab4.php?action=edit&id=<?= urlencode($product['product_id']) ?>" style="flex:1;"><button class="btn-edit" type="button">Sửa</button></a>
             <button class="btn-detail" type="button" style="flex:1;" onclick="openModal('<?= htmlspecialchars(addslashes($product['product_id'])) ?>','<?= htmlspecialchars(addslashes($product['description'])) ?>','<?= htmlspecialchars(addslashes($product['price'])) ?>','<?= htmlspecialchars($baseUrl . '/' . ltrim($product['image'], '/')) ?>')">Chi tiết</button>
@@ -124,8 +169,11 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 
   <script>
+    // Hàm JavaScript lấy dữ liệu thô của hàng sản phẩm, ghi đè vào các thẻ span trống trong Modal và mở lớp phủ hiển thị lên
     function openModal(id, desc, price, img) { document.getElementById('modal-id').textContent = id; document.getElementById('modal-desc').textContent = desc; document.getElementById('modal-price').textContent = price; document.getElementById('modal-img').src = img; document.getElementById('detailModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
+    // Gỡ bỏ lớp class 'active' để ẩn Modal đi và khôi phục lại thanh cuộn dọc (scroll) của trang web như thường
     function closeModal() { document.getElementById('detailModal').classList.remove('active'); document.body.style.overflow = ''; }
+    // Lắng nghe phím ESC tắt nhanh hộp thoại đang bật
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
   </script>
 </body>

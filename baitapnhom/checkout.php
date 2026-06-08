@@ -1,4 +1,4 @@
-<?php
+<!-- <?php
 session_start();
 require "./db_utils.php";
 $db = new DB_UTILS();
@@ -280,4 +280,4 @@ function toggleFormBankInfo(show) {
 }
 </script>
 </body>
-</html>
+</html> -->
