@@ -1,5 +1,9 @@
 <?php
 session_start();
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php"); // Nếu chưa đăng nhập thì bắt buộc chuyển hướng về trang Login
+    exit;
+}
 $host = '127.0.0.1';
 $db = 'lab4';
 $user = 'root';
@@ -904,8 +908,12 @@ if ($lastOrder)
 
 <body>
 
-  <header class="topbar">
+<header class="topbar">
     <span class="topbar-brand">Shop</span>
+    <div style="color: #fff; font-size: 14px;">
+        Xin chào, <strong><?= htmlspecialchars($_SESSION['user']['full_name']) ?></strong> ! 
+        | <a href="logout.php" style="color: #ff9999; text-decoration: none; margin-left: 5px;">[Đăng xuất]</a>
+    </div>
     <nav class="topbar-nav">
       <a href="DonHang.php">Đơn Hàng</a> <a href="lab4.php">Quản lý</a>
       <button class="cart-btn" onclick="openCart()">Giỏ hàng <span
