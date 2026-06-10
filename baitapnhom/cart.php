@@ -954,7 +954,8 @@ if ($lastOrder)
         <?php if ($page > 1): ?><a href="?page=<?= $page - 1 ?><?= $sp ?>">&#9664;</a><?php else: ?><span
             class="pg-disabled">&#9664;</span><?php endif; ?>
         <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-          <span class="<?= $i == $page ? 'pg-active' : '' ?>"><?= $i == $page ? $i : "<a href='?page=$i$sp'>$i</a>" ?></span>
+          <span
+            class="<?= $i == $page ? 'pg-active' : '' ?>"><?= $i == $page ? $i : "<a href='?page=$i$sp'>$i</a>" ?></span>
         <?php endfor; ?>
         <?php if ($page < $totalPages): ?><a href="?page=<?= $page + 1 ?><?= $sp ?>">&#9654;</a><?php else: ?><span
             class="pg-disabled">&#9654;</span><?php endif; ?>
