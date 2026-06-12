@@ -162,7 +162,7 @@ $usersList = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <input type="text" name="username" placeholder="Ví dụ: nguyenvana" required>
                 </div>
                 <div class="form-group">
-                    <label>Mật khẩu gốc:</label>
+                    <label>Mật khẩu:</label>
                     <input type="password" name="password" placeholder="Nhập mật khẩu..." required>
                 </div>
                 <div class="form-group">
@@ -170,13 +170,13 @@ $usersList = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <input type="text" name="full_name" placeholder="Ví dụ: Nguyễn Văn A" required>
                 </div>
                 <div class="form-group">
-                    <label>Phân quyền gốc:</label>
+                    <label>Quyền hạn:</label>
                     <select name="role">
-                        <option value="user" selected>User thường</option>
-                        <option value="admin">Quản trị viên (Admin)</option>
+                        <option value="user" selected>User</option>
+                        <option value="admin">Admin</option>
                     </select>
                 </div>
-                <button type="submit" class="btn-submit-add">💾 Thêm tài khoản</button>
+                <button type="submit" class="btn-submit-add"> Thêm tài khoản</button>
             </div>
         </form>
     </div>
