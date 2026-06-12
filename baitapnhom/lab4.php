@@ -1,4 +1,9 @@
 <?php
+session_start();
+if (!isset($_SESSION['user']) || $_SESSION['user']['role'] !== 'admin') {
+  die("<h2 style='color:red; text-align:center; margin-top:50px;'>Quyền truy cập bị từ chối! Trang này chỉ dành cho Admin.</h2><p style='text-align:center;'><a href='cart.php'>Quay lại trang chủ mua hàng</a></p>");
+  exit;
+}
 $baseUrl = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/');
 try {
   $pdo = new PDO("mysql:host=127.0.0.1;dbname=lab4;charset=utf8", "root", "", [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]);
@@ -391,7 +396,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     .modal-footer {
       padding: 14px 20px;
-      border-top: 1px solid #e5e7eb;
+      border-top: 1px solid #e5e5e5;
       display: flex;
       justify-content: flex-end
     }
@@ -406,15 +411,16 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <body>
   <h1>Quản lý sản phẩm</h1>
-  <div style="text-align:center; margin-bottom: 12px;"><a href="cart.php"
-      style="display:inline-block; background:#16a34a; color:#fff; padding:10px 28px; border-radius:8px; font-weight:bold; text-decoration:none;">🛒
-      Trang mua hàng &amp; Giỏ hàng</a></div>
-
+  <div style="text-align:center; margin-bottom: 12px; display: flex; justify-content: center; gap: 10px;">
+      <a href="cart.php" style="display:inline-block; background:#16a34a; color:#fff; padding:10px 24px; border-radius:8px; font-weight:bold; text-decoration:none;">🛒 Trang mua hàng</a>
+      <a href="ql_user.php" style="display:inline-block; background:#2563eb; color:#fff; padding:10px 24px; border-radius:8px; font-weight:bold; text-decoration:none;">👥 Quản lý thành viên</a>
+  </div>
+  
+  
   <?php if ($error): ?>
     <div class="alert alert-danger"><?= htmlspecialchars($error) ?></div><?php endif; ?>
   <?php if ($success): ?>
     <div class="alert alert-success"><?= htmlspecialchars($success) ?></div><?php endif; ?>
-
   <form class="product-form" method="POST" enctype="multipart/form-data">
     <h2><?= $editProduct ? 'Sửa sản phẩm' : 'Thêm sản phẩm' ?></h2>
     <input type="hidden" name="action" value="<?= $editProduct ? 'edit' : 'add' ?>">
@@ -434,14 +440,12 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php if ($editProduct): ?><a href="lab4.php"
         style="display: block; text-align: center; margin-top: 10px; color: #666; text-decoration: none;">Hủy</a><?php endif; ?>
   </form>
-
   <form class="search-form" method="GET">
     <input type="text" name="search" placeholder="Tìm kiếm theo ID " value="<?= htmlspecialchars($search) ?>" /><button
       class="btn-add" type="submit">Tìm kiếm</button>
     <?php if ($search !== ''): ?><a href="lab4.php"
         style="padding: 10px 20px; background: #e5e7eb; color:#374151; border-radius: 8px; text-decoration: none; display: flex; align-items: center;">Hủy</a><?php endif; ?>
   </form>
-
   <div class="product-list">
     <?php if (count($products) > 0):
       foreach ($products as $product): ?>
@@ -457,7 +461,7 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <button class="btn-detail" type="button" style="flex:1;"
                 onclick="openModal('<?= htmlspecialchars(addslashes($product['product_id'])) ?>','<?= htmlspecialchars(addslashes($product['description'])) ?>','<?= htmlspecialchars(addslashes($product['price'])) ?>','<?= htmlspecialchars($baseUrl . '/' . ltrim($product['image'], '/')) ?>')">Chi
                 tiết</button>
-              <form method="POST" style="flex:1;" onsubmit="return confirm('bạn có chắc muốn xóa ko');">
+              <form method="POST" style="flex:1;" onsubmit="return confirm('Bạn có chắc muốn xóa không?');">
                 <input type="hidden" name="action" value="delete"><input type="hidden" name="productId"
                   value="<?= htmlspecialchars($product['product_id']) ?>"><button class="btn-delete"
                   type="submit">Xóa</button>
@@ -471,18 +475,17 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <?php endforeach; else: ?>
       <p style="text-align: center; grid-column: 1 / -1;">Chưa có sản phẩm nào</p><?php endif; ?>
   </div>
-
   <?php if ($totalPages > 1):
     $searchParam = $search !== '' ? '&search=' . urlencode($search) : ''; ?>
     <div class="pagination">
-      <a href="lab4.php?page=<?= max(1, $page - 1) ?><?= $searchParam ?>" class="<?= $page <= 1 ? 'disabled' : '' ?>">&#9664;</a>
+      <a href="lab4.php?page=<?= max(1, $page - 1) ?><?= $searchParam ?>"
+        class="<?= $page <= 1 ? 'disabled' : '' ?>">&#9664;</a>
       <?php for ($i = 1; $i <= $totalPages; $i++): ?><a href="lab4.php?page=<?= $i ?><?= $searchParam ?>"
           class="<?= $i == $page ? 'active' : '' ?>"><?= $i ?></a><?php endfor; ?>
       <a href="lab4.php?page=<?= min($totalPages, $page + 1) ?><?= $searchParam ?>"
         class="<?= $page >= $totalPages ? 'disabled' : '' ?>">&#9654;</a>
     </div>
   <?php endif; ?>
-
   <div class="modal-overlay" id="detailModal" onclick="if(event.target===this) closeModal()">
     <div class="modal-box">
       <div class="modal-header">
@@ -498,7 +501,6 @@ $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="modal-footer"><button onclick="closeModal()">Đóng</button></div>
     </div>
   </div>
-
   <script>
     function openModal(id, desc, price, img) { document.getElementById('modal-id').textContent = id; document.getElementById('modal-desc').textContent = desc; document.getElementById('modal-price').textContent = price; document.getElementById('modal-img').src = img; document.getElementById('detailModal').classList.add('active'); document.body.style.overflow = 'hidden'; }
     function closeModal() { document.getElementById('detailModal').classList.remove('active'); document.body.style.overflow = ''; }

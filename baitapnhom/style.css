@@ -1,0 +1,644 @@
+/* ==========================================================================
+   HẸ THỐNG CORE STYLES & BIẾN MÀU MODERN PREMIUM
+   ========================================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap');
+
+:root {
+    --bg-main: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    
+    /* Brand Accents */
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-light: #eef2ff;
+    
+    --accent: #e11d48;
+    --accent-hover: #be123c;
+    
+    --success: #10b981;
+    --success-hover: #059669;
+    --warning: #f59e0b;
+    --info: #0284c7;
+    
+    /* Effects */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
+    --shadow-md: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.05);
+    --shadow-lg: 0 20px 40px -15px rgba(15, 23, 42, 0.15);
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset default hệ thống */
+*, *::before, *::after { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+body { 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    background-color: var(--bg-main); 
+    color: var(--text-main); 
+    min-height: 100vh;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   NAVIGATION BAR & HEADER (Dùng chung cho Cart/DonHang)
+   ========================================================================== */
+.topbar, header.topbar { 
+    position: sticky !important; 
+    top: 0; 
+    z-index: 900; 
+    background: #0f172a !important; /* Slate tối cao cấp */
+    display: flex !important; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 40px !important; 
+    height: 70px !important; 
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15) !important;
+}
+
+.topbar-brand { 
+    font-family: 'Playfair Display', serif; 
+    font-size: 24px !important; 
+    font-weight: 700 !important;
+    letter-spacing: -0.5px;
+    color: #ffffff !important;
+}
+
+.user-nav-info {
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+.user-nav-info a {
+    color: #38bdf8 !important;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.user-nav-info a:hover {
+    color: #7dd3fc !important;
+    text-decoration: underline !important;
+}
+
+.topbar-nav { 
+    display: flex; 
+    gap: 20px !important; 
+    align-items: center; 
+}
+
+.topbar-nav a { 
+    color: #94a3b8 !important; 
+    text-decoration: none; 
+    font-size: 14px; 
+    font-weight: 600; 
+    transition: var(--transition);
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+}
+
+.topbar-nav a:hover { 
+    color: #ffffff !important; 
+    background: rgba(255,255,255,0.05);
+}
+
+/* Nút Admin đặc biệt trên Nav */
+.topbar-nav a[href*="DonHang.php"]:style-admin,
+.topbar-nav a[style*="border"] {
+    color: #f59e0b !important;
+    border: 1.5px solid #f59e0b !important;
+    background: rgba(245, 158, 11, 0.1) !important;
+}
+.topbar-nav a[style*="border"]:hover {
+    background: #f59e0b !important;
+    color: #0f172a !important;
+}
+
+/* Giỏ hàng Badge Button */
+.cart-btn { 
+    position: relative; 
+    background: var(--primary) !important; 
+    border: none; 
+    border-radius: var(--radius-sm) !important; 
+    color: #fff !important; 
+    font-size: 14px; 
+    font-weight: 600; 
+    padding: 10px 20px !important; 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    transition: var(--transition) !important;
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.cart-btn:hover { 
+    background: var(--primary-hover) !important;
+    transform: translateY(-1px);
+}
+
+.cart-badge { 
+    position: absolute; 
+    top: -8px; 
+    right: -8px; 
+    background: var(--accent) !important; 
+    color: #fff !important; 
+    font-size: 11px; 
+    font-weight: 700; 
+    width: 22px; 
+    height: 22px; 
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    border: 2px solid #0f172a;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+
+/* ==========================================================================
+   MAIN LAYOUT & TYPOGRAPHY
+   ========================================================================== */
+.main, .container { 
+    max-width: 1280px !important; 
+    margin: 40px auto !important; 
+    padding: 0 24px !important; 
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+/* Chỉnh riêng box container cho DonHang & Login */
+div.container {
+    background: var(--card-bg) !important;
+    padding: 40px !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-md) !important;
+    max-width: 900px !important;
+}
+
+.page-title, h2 { 
+    font-family: 'Playfair Display', serif; 
+    font-size: 36px !important; 
+    color: var(--text-main) !important;
+    font-weight: 700;
+    margin-bottom: 8px !important;
+    text-align: left !important;
+}
+
+div.container h2 { text-align: center !important; margin-bottom: 30px !important; }
+
+.page-sub { 
+    color: var(--text-muted); 
+    font-size: 16px;
+    margin-bottom: 35px; 
+}
+
+/* ==========================================================================
+   BUTTONS & FORMS SYSTEM
+   ========================================================================== */
+.btn, button { 
+    padding: 12px 24px; 
+    border-radius: var(--radius-md) !important; 
+    border: none; 
+    font-family: inherit; 
+    font-weight: 600; 
+    font-size: 14px; 
+    cursor: pointer;
+    transition: var(--transition) !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-primary, .btn-add { background: var(--primary) !important; color: #fff !important; }
+.btn-primary:hover, .btn-add:hover { background: var(--primary-hover) !important; }
+
+.btn-secondary { background: var(--border-color) !important; color: var(--text-main) !important; }
+.btn-secondary:hover { background: #cbd5e1 !important; }
+
+.btn-success, .btn-approve { background: var(--success) !important; color: #fff !important; }
+.btn-success:hover, .btn-approve:hover { background: var(--success-hover) !important; }
+
+.btn-cancel, .btn-delete { background: var(--accent) !important; color: #fff !important; }
+.btn-cancel:hover, .btn-delete:hover { background: var(--accent-hover) !important; }
+
+.btn-reorder { background: var(--info) !important; color: white !important; }
+
+.btn-back {
+    background: #475569 !important;
+    color: white !important;
+    padding: 10px 20px !important;
+    border-radius: var(--radius-sm) !important;
+    text-decoration: none;
+    font-weight: 600;
+    margin-right: 10px;
+    transition: var(--transition);
+}
+.btn-back:hover { background: #1e293b !important; }
+
+/* Ô Tìm kiếm */
+.search-row, .search-container, .search-form { 
+    display: flex; 
+    gap: 12px; 
+    margin-bottom: 35px; 
+    max-width: 550px !important; 
+}
+.search-row input, .search-input, .search-form input { 
+    flex: 1; 
+    padding: 14px 20px; 
+    border: 1.5px solid var(--border-color) !important; 
+    border-radius: var(--radius-md) !important; 
+    font-size: 15px; 
+    background: var(--card-bg) !important; 
+    outline: none; 
+    transition: var(--transition);
+    color: var(--text-main);
+}
+.search-row input:focus, .search-input:focus, .search-form input:focus { 
+    border-color: var(--primary) !important; 
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+.search-row button, .btn-search, .search-form button {
+    width: auto !important;
+    padding: 0 28px !important;
+}
+
+/* ==========================================================================
+   PRODUCT GRID & CARDS (Trang mua hàng & Admin Lab4)
+   ========================================================================== */
+.product-grid, .product-list { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)) !important; 
+    gap: 30px !important; 
+    margin-bottom: 50px; 
+    max-width: 100% !important;
+}
+
+.product-card { 
+    background: var(--card-bg) !important; 
+    border-radius: var(--radius-lg) !important; 
+    overflow: hidden; 
+    box-shadow: var(--shadow-sm) !important; 
+    border: 1px solid var(--border-color);
+    transition: var(--transition) !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover { 
+    transform: translateY(-8px); 
+    box-shadow: var(--shadow-lg) !important;
+    border-color: transparent;
+}
+
+.product-card img { 
+    width: 100%; 
+    height: 220px !important; 
+    object-fit: cover; 
+    background: #f1f5f9;
+    transition: var(--transition);
+}
+.product-card:hover img {
+    transform: scale(1.02);
+}
+
+.card-body, .product-info { 
+    padding: 24px !important; 
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.card-id, .product-id { 
+    font-size: 12px; 
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted) !important; 
+    margin-bottom: 8px !important; 
+    letter-spacing: 0.5px;
+}
+
+.card-desc, .product-description { 
+    font-size: 16px !important; 
+    font-weight: 500;
+    line-height: 1.6; 
+    color: var(--text-main);
+    margin-bottom: 14px !important;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    height: 3.2em;
+}
+
+.card-price, .product-price { 
+    font-size: 22px !important; 
+    font-weight: 800 !important; 
+    color: var(--accent) !important; 
+    margin-bottom: 20px !important; 
+    margin-top: auto;
+}
+
+.card-actions, .btn-group { 
+    display: flex; 
+    gap: 10px !important; 
+}
+
+.btn-cart { 
+    flex: 2 !important; 
+    background: var(--primary) !important; 
+    color: #fff !important; 
+    font-weight: 600;
+    border-radius: var(--radius-md) !important;
+    padding: 12px !important;
+    transition: var(--transition);
+}
+.btn-cart:hover { background: var(--primary-hover) !important; }
+
+.btn-detail-sm, .btn-detail { 
+    flex: 1 !important;
+    padding: 12px !important; 
+    border: 1.5px solid var(--border-color) !important; 
+    border-radius: var(--radius-md) !important; 
+    background: transparent !important; 
+    color: var(--text-muted) !important; 
+    font-size: 14px; 
+    transition: var(--transition) !important;
+}
+.btn-detail-sm:hover, .btn-detail:hover { 
+    border-color: var(--text-main) !important; 
+    color: var(--text-main) !important; 
+    background: rgba(15, 23, 42, 0.02) !important;
+}
+
+/* Nút phụ đặc biệt trên Card Lab4 admin */
+.product-info a[href*="action=edit"] { display: contents; }
+.btn-edit { background: var(--warning) !important; color: #0f172a !important; margin-top: 0 !important;}
+.btn-delete { margin-top: 0 !important; }
+.product-info a[href="cart.php"] {
+    margin-top: 15px;
+    background: var(--primary-light) !important;
+    color: var(--primary) !important;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: var(--radius-md);
+    text-align: center;
+    font-weight: 700;
+    transition: var(--transition);
+}
+.product-info a[href="cart.php"]:hover {
+    background: var(--primary) !important;
+    color: white !important;
+}
+
+/* Form Add/Edit hàng của Lab4 Admin */
+.product-form {
+    background: var(--card-bg) !important;
+    padding: 35px !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-md) !important;
+    border: 1px solid var(--border-color);
+}
+.product-form h2 { text-align: left !important; font-size: 24px !important; margin-bottom: 20px !important;}
+
+/* ==========================================================================
+   PAGINATION SYSTEM
+   ========================================================================== */
+.pagination { 
+    display: flex; 
+    justify-content: center; 
+    gap: 8px; 
+    margin: 40px 0 15px !important; 
+}
+.pagination a, .pagination span { 
+    display: inline-flex; 
+    align-items: center; 
+    justify-content: center; 
+    min-width: 44px !important; 
+    height: 44px !important; 
+    padding: 0 14px !important; 
+    border-radius: var(--radius-md) !important; 
+    font-weight: 700; 
+    font-size: 15px; 
+    text-decoration: none;
+    transition: var(--transition) !important;
+}
+.pagination a { 
+    background: var(--card-bg) !important; 
+    color: var(--text-main) !important; 
+    border: 1.5px solid var(--border-color) !important; 
+}
+.pagination a:hover { 
+    background: var(--primary) !important; 
+    color: #fff !important; 
+    border-color: var(--primary) !important; 
+}
+.pagination .pg-active, .pagination .active { 
+    background: var(--primary) !important; 
+    color: #fff !important; 
+    border: 1.5px solid var(--primary) !important; 
+}
+.pagination .pg-disabled, .pagination .disabled { 
+    background: #f1f5f9 !important; 
+    color: #cbd5e1 !important; 
+    cursor: not-allowed; 
+    border: 1.5px solid var(--border-color) !important; 
+}
+.page-info { text-align: center; color: var(--text-muted); font-size: 14px; }
+
+/* ==========================================================================
+   OVERLAYS & MODAL DIALOGS
+   ========================================================================== */
+.overlay, .modal-overlay { 
+    background: rgba(15, 23, 42, 0.6) !important; 
+    backdrop-filter: blur(8px);
+    padding: 24px !important;
+}
+
+.modal-box { 
+    background: var(--card-bg) !important; 
+    border-radius: var(--radius-lg) !important; 
+    box-shadow: var(--shadow-lg) !important; 
+    border: 1px solid rgba(255,255,255,0.1);
+    animation: modalPop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+}
+@keyframes modalPop { 
+    from { transform: translateY(20px) scale(0.96); opacity: 0; } 
+    to { transform: translateY(0) scale(1); opacity: 1; } 
+}
+
+.modal-hdr, .modal-header { 
+    padding: 24px 30px !important; 
+    border-bottom: 1.5px solid var(--border-color) !important; 
+    background: transparent !important;
+    color: var(--text-main) !important;
+}
+.modal-hdr h3, .modal-header h3 { 
+    font-family: 'Playfair Display', serif; 
+    font-size: 22px !important; 
+    font-weight: 700;
+}
+.modal-close-btn, .modal-close { 
+    color: var(--text-muted) !important; 
+    font-size: 28px !important; 
+    transition: var(--transition);
+}
+.modal-close-btn:hover, .modal-close:hover { color: var(--accent) !important; }
+
+.modal-body { padding: 30px !important; }
+.modal-footer { 
+    padding: 20px 30px !important; 
+    border-top: 1.5px solid var(--border-color) !important; 
+}
+
+/* ==========================================================================
+   CART TABLE & CHECKOUT ELEMENTS
+   ========================================================================== */
+.cart-table, table { 
+    width: 100%; 
+    border-collapse: collapse; 
+    margin-bottom: 24px;
+}
+.cart-table th, th { 
+    background: #f8fafc !important; 
+    color: var(--text-muted) !important; 
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 12px !important;
+    letter-spacing: 0.5px;
+    padding: 16px !important;
+    border-bottom: 2px solid var(--border-color) !important;
+}
+.cart-table td, td { 
+    padding: 18px 16px !important; 
+    border-bottom: 1px solid var(--border-color) !important;
+    color: var(--text-main);
+}
+
+.cart-img { width: 60px !important; height: 60px !important; border-radius: var(--radius-sm) !important; }
+.qty-input { 
+    width: 65px !important; 
+    padding: 8px !important; 
+    border: 1.5px solid var(--border-color) !important; 
+    border-radius: var(--radius-sm) !important; 
+}
+
+.cart-total-row { 
+    padding: 24px 0 10px !important; 
+    border-top: 2px dashed var(--border-color);
+}
+.cart-total-row span:last-child { font-size: 26px !important; font-weight: 800 !important; }
+
+/* Groups và Fields của Form */
+.form-group { margin-bottom: 22px !important; }
+.form-group label { color: var(--text-main); font-weight: 600; margin-bottom: 8px !important; }
+.form-group input, .form-group textarea, .form-group select { 
+    background: #f8fafc !important;
+    border: 1.5px solid var(--border-color) !important;
+    border-radius: var(--radius-md) !important;
+    padding: 12px 16px !important;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+.form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--primary) !important;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+}
+
+/* Grid Lựa chọn Cổng thanh toán */
+.pay-options { gap: 14px !important; margin-top: 10px; }
+.pay-label { 
+    border: 2px solid var(--border-color) !important; 
+    border-radius: var(--radius-md) !important; 
+    padding: 16px 10px !important; 
+    background: #f8fafc !important;
+    font-weight: 700 !important;
+}
+.pay-option input:checked + .pay-label { 
+    border-color: var(--primary) !important; 
+    background: var(--primary-light) !important; 
+    color: var(--primary) !important; 
+}
+
+/* Box hiển thị QR Code động */
+.qr-payment-box { 
+    background: #ffffff !important; 
+    border: 2.5px dashed #cbd5e1 !important; 
+    border-radius: var(--radius-lg) !important; 
+    padding: 25px !important; 
+}
+.qr-payment-box img { 
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md) !important; 
+}
+
+/* ==========================================================================
+   SHOPEE TIMELINE SYSTEM (Trang DonHang)
+   ========================================================================== */
+.shopee-vertical-timeline-box { 
+    background: #f8fafc !important; 
+    border: 1px solid var(--border-color) !important; 
+    padding: 30px !important; 
+    border-radius: var(--radius-lg) !important; 
+}
+.shopee-v-timeline::before { left: 6px !important; background: #cbd5e1 !important; }
+.shopee-v-dot { left: -28px !important; border: 3px solid #ffffff !important; }
+
+.shopee-v-item.completed .shopee-v-dot { background: var(--success) !important; }
+.shopee-v-item.completed .shopee-v-title { color: var(--success-hover) !important; }
+.shopee-v-item.active .shopee-v-dot { background: var(--primary) !important; box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.25) !important; left: -29px !important;}
+.shopee-v-item.active .shopee-v-title { color: var(--primary) !important; }
+.shopee-v-item.danger-active .shopee-v-dot { background: var(--accent) !important; box-shadow: 0 0 0 5px rgba(225, 29, 72, 0.25) !important; left: -29px !important;}
+
+/* ==========================================================================
+   TOAST NOTIFICATION & AUTH (Login/Register)
+   ========================================================================== */
+.toast { 
+    background: #0f172a !important; 
+    border-radius: var(--radius-md) !important; 
+    box-shadow: var(--shadow-lg) !important; 
+    border-left: 5px solid var(--success) !important; 
+    padding: 16px 24px !important;
+}
+.toast.toast-error { border-left-color: var(--accent) !important; }
+
+/* Hệ thống Auth Box (Login/Register) */
+.auth-box, .auth-container { 
+    background: var(--card-bg) !important; 
+    padding: 40px !important; 
+    border-radius: var(--radius-lg) !important; 
+    box-shadow: var(--shadow-lg) !important; 
+    border: 1px solid var(--border-color);
+}
+.auth-box h2, .auth-container h2 {
+    font-size: 28px !important;
+    text-align: center !important;
+    letter-spacing: -0.5px;
+    font-weight: 800;
+    color: #0f172a;
+}
+.btn-auth, .auth-box .btn {
+    background: var(--primary) !important;
+    padding: 14px !important;
+    font-size: 15px !important;
+    border-radius: var(--radius-md) !important;
+}
+.btn-auth:hover, .auth-box .btn:hover { background: var(--primary-hover) !important; }
+
+/* Responsive chỉnh chu */
+@media (max-width: 768px) {
+    .topbar, header.topbar { padding: 0 20px !important; }
+    .main, .container { padding: 0 16px !important; margin: 20px auto !important; }
+    div.container { padding: 20px !important; }
+    .info-grid { grid-template-columns: 1fr !important; }
+    .info-item { grid-column: span 1 !important; }
+}
