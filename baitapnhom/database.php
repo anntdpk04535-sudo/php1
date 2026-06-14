@@ -3,13 +3,14 @@ require_once 'config.php';
 ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
-class Database {
+class Database
+{
     private $host;
     private $username;
     private $password;
     private $database;
     public $connection;
-    
+
     public function __construct()
     {
         $this->host = HOST;
@@ -18,14 +19,15 @@ class Database {
         $this->database = DATABASE;
     }
 
-    public function getConnection() {
+    public function getConnection()
+    {
         try {
             $conn = new PDO("mysql:host=$this->host;dbname=$this->database", $this->username, $this->password);
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             // echo "Connected successfully";
             return $this->connection = $conn;
-          } catch(PDOException $e) {
+        } catch (PDOException $e) {
             echo "Connection failed: " . $e->getMessage();
-          }
+        }
     }
 }
