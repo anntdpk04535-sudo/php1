@@ -21,5 +21,3 @@ $momo_Endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 $momo_ReturnUrl = "http://localhost/php1-main/baitapnhom/momo_return.php";
 $momo_NotifyUrl = "http://localhost/php1-main/baitapnhom/momo_ipn.php";
 ?>
-
-?>
